@@ -36,3 +36,12 @@
 .header-left {
   display: flex;
 }
+.add-task-btn{
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #727272;
+    cursor: pointer;
+    padding-top: 20px;
+}

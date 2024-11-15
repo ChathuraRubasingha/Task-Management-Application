@@ -1,0 +1,23 @@
+.task-board .task-card {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  
+  .task-board .column {
+    min-height: 300px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .task-board .column.dragging-over {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s ease;
+  }
+  
+  .task-board .draggable {
+    user-select: none;
+  }
+  
+  .task-board .draggable:active {
+    transition: transform 0.2s ease;
+  }

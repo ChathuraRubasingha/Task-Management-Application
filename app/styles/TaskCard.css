@@ -1,0 +1,86 @@
+.card-wrapper {
+  border-radius: 12px;
+  background-color: white;
+  position: relative;
+}
+.card-upper {
+  border-bottom: 2px solid rgb(240, 240, 240);
+  padding: 5px 20px;
+}
+.card-lower {
+  padding: 5px 20px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.card-title-text {
+  background-color: transparent;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+.card-title-text:focus {
+  outline: none;
+  box-shadow: none;
+}
+.card-description {
+  font-size: 18px;
+  color: #474747;
+  padding: 10px 0;
+  text-align: justify;
+}
+.card-fotter {
+  border-top: 2px solid rgb(240, 240, 240);
+}
+.card-buttons-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+.card-button-left {
+  display: flex;
+  align-items: center;
+}
+.asignee {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.assignee-menu {
+  display: flex;
+  padding: 10px 20px;
+  align-items: center;
+  cursor: pointer;
+}
+.assignee-menu img {
+  padding-right: 10px;
+}
+.assignee-menu span {
+  margin-right: 10px;
+}
+.due-date span {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.priority span {
+  font-size: 14px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+.priority-menu-item {
+  padding: 10px 40px 10px 20px;
+}
+.card-fotter{
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #727272;
+
+}
