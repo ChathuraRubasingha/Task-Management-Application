@@ -12,6 +12,7 @@ interface Task {
   dueDate?: string;
   priority?: 'Low' | 'Medium' | 'High';
   status: 'todo' | 'inProgress' | 'completed';
+  description: string;
 }
 
 interface TasksState {

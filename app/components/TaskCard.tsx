@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateTask } from "../features/tasks/taskSlice";
+import { format, differenceInDays, isToday, addDays } from "date-fns";
 import "../styles/TaskCard.css";
 import User from "../assets/Images/profile img.png";
 import User2 from "../assets/Images/profile img (1).png";
 import Avetar from "../assets/icons/user.svg";
 import CalendarIcon from "../assets/icons/date.svg";
 import Image from "next/image";
-import { format } from "date-fns";
 import TaskDrawer from "./TaskDrawer";
 
-const assignees = [
+export const assignees = [
   { name: "John Doe", image: User },
   { name: "Jane Smith", image: User2 },
   { name: "Sam Wilson", image: User },
@@ -19,7 +19,9 @@ const assignees = [
 function TaskCard({ task }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task.title || "");
-  const [dueDate, setDueDate] = useState(task.dueDate || "");
+  const [dueDate, setDueDate] = useState(
+    task.dueDate ? new Date(task.dueDate) : null
+  ); // Store as Date object
   const [priority, setPriority] = useState(task.priority || "");
   const [selectedAssignee, setSelectedAssignee] = useState(
     task.assignee || null
@@ -28,6 +30,7 @@ function TaskCard({ task }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [remainingTimeText, setRemainingTimeText] = useState("");
 
   const handleFieldChange = (field, value) => {
     dispatch(updateTask({ id: task.id, field, value }));
@@ -41,10 +44,11 @@ function TaskCard({ task }) {
 
   const handleDateChange = (event) => {
     const selectedDate = new Date(event.target.value);
-    const formattedDate = format(selectedDate, "dd MMM");
-    setDueDate(formattedDate);
-    handleFieldChange("dueDate", formattedDate);
+    setDueDate(selectedDate);
+    handleFieldChange("dueDate", selectedDate.toISOString()); // Store ISO format for accuracy
     setShowDatePicker(false);
+
+    updateRemainingTimeText(selectedDate);
   };
 
   const getPriorityStyle = () => {
@@ -66,8 +70,36 @@ function TaskCard({ task }) {
     setShowPriorityDropdown(false);
   };
 
+  const updateRemainingTimeText = (selectedDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    const daysDifference = differenceInDays(selectedDate, today);
+
+    if (daysDifference > 1) {
+      setRemainingTimeText(`Should complete within ${daysDifference} days`);
+    } else if (daysDifference === 1) {
+      setRemainingTimeText("Should complete within tomorrow");
+    } else if (isToday(selectedDate)) {
+      setRemainingTimeText("Should complete within today");
+    } else if (daysDifference === -1) {
+      setRemainingTimeText("Should've completed yesterday");
+    } else {
+      setRemainingTimeText(
+        `Should've completed ${Math.abs(daysDifference)} days ago`
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (dueDate) {
+      updateRemainingTimeText(dueDate);
+    }
+  }, [dueDate]);
+
   return (
-    <div className="border rounded-lg p-4 bg-gray-50 shadow-sm w-full max-w-md mb-3" >
+    <div className="border rounded-lg p-4 bg-gray-50 shadow-sm w-full max-w-md mb-3">
       <div onClick={() => setIsDrawerOpen(true)}>open</div>
       <div className="mb-2">
         <input
@@ -78,9 +110,15 @@ function TaskCard({ task }) {
             setTitle(e.target.value);
             handleFieldChange("title", e.target.value);
           }}
+          disabled={!!title && !!dueDate && !!priority}
           className="w-full p-2 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 border-none"
         />
       </div>
+      <p style={{ color: "gray", textAlign: "justify" }}>
+        {task.description && task.description.length > 100
+          ? `${task.description.substring(0, 100)}...`
+          : task.description}
+      </p>
       <div className="flex items-center space-x-3 mt-2">
         <div className="w-1/3 relative">
           {selectedAssignee ? (
@@ -89,7 +127,6 @@ function TaskCard({ task }) {
               width={40}
               height={40}
               alt="Picture of the author"
-              onClick={() => setShowDropdown(true)}
             />
           ) : (
             <Image
@@ -123,10 +160,9 @@ function TaskCard({ task }) {
         <div className="w-1/3 relative">
           {dueDate ? (
             <span
-              onClick={() => setShowDatePicker(true)}
               className="cursor-pointer text-gray-700"
             >
-              {dueDate}
+              {format(dueDate, "dd MMM")}
             </span>
           ) : (
             <Image
@@ -150,7 +186,7 @@ function TaskCard({ task }) {
         </div>
         <div className="w-1/3 relative">
           <span
-            onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
+             onClick={!priority ? () => setShowPriorityDropdown(!showPriorityDropdown) : null}
             className={`cursor-pointer p-2 rounded-lg ${getPriorityStyle()}`}
           >
             {priority || "Set priority"}
@@ -179,7 +215,12 @@ function TaskCard({ task }) {
           )}
         </div>
       </div>
-      <TaskDrawer task={task} open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+      <div className="text-gray-600 mt-4 text-center">{remainingTimeText}</div>
+      <TaskDrawer
+        task={task}
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </div>
   );
 }

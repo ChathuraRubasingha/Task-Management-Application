@@ -10,6 +10,8 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import TaskCard from "./TaskCard";
+import { Add, EmojiHappy, RecordCircle } from "iconsax-react";
+import "../styles/TaskBoard.css";
 
 export default function TaskBoard() {
   const dispatch = useDispatch();
@@ -39,15 +41,27 @@ export default function TaskBoard() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="task-board grid grid-cols-3 gap-4 bg-slate-50">
+      <div className="task-board grid grid-cols-3 gap-4">
         <Droppable droppableId="todo">
           {(provided) => (
             <div
+              className="column"
               ref={provided.innerRef}
               {...provided.droppableProps}
               style={{ textAlign: "center" }}
             >
-              <h2>Todo ({todoTasks.length})</h2>
+              <div className="column-header">
+                <div className="header-left">
+                  <RecordCircle size={24} color="#FFAD0D" />
+                  <h2>Todo</h2>
+                  <p>{todoTasks.length}</p>
+                </div>
+                <div className="header-right">
+                  <Add size={24} color="#000000" />
+                </div>
+              </div>
+
+              {/* <EmojiHappy color="#000000" variant="Bulk" size={32} /> */}
               {todoTasks.map((task, index) => (
                 <Draggable key={task.id} draggableId={task.id} index={index}>
                   {(provided) => (
@@ -74,11 +88,21 @@ export default function TaskBoard() {
         <Droppable droppableId="inProgress">
           {(provided) => (
             <div
+              className="column"
               ref={provided.innerRef}
               {...provided.droppableProps}
               style={{ textAlign: "center" }}
             >
-              <h2>In Progress ({inProgressTasks.length})</h2>
+              <div className="column-header">
+                <div className="header-left">
+                  <RecordCircle size={24} color="#0C6FBF" />
+                  <h2>In Progress</h2>
+                  <p>{inProgressTasks.length}</p>
+                </div>
+                <div className="header-right">
+                  <Add size={24} color="#000000" />
+                </div>
+              </div>
               {inProgressTasks.map((task, index) => (
                 <Draggable key={task.id} draggableId={task.id} index={index}>
                   {(provided) => (
@@ -105,11 +129,21 @@ export default function TaskBoard() {
         <Droppable droppableId="completed">
           {(provided) => (
             <div
+              className="column"
               ref={provided.innerRef}
               {...provided.droppableProps}
               style={{ textAlign: "center" }}
             >
-              <h2>Completed ({completedTasks.length})</h2>
+              <div className="column-header">
+                <div className="header-left">
+                  <RecordCircle size={24} color="#2A7E2E" />
+                  <h2>Completed</h2>
+                  <p>{completedTasks.length}</p>
+                </div>
+                <div className="header-right">
+                  <Add size={24} color="#000000" />
+                </div>
+              </div>
               {completedTasks.map((task, index) => (
                 <Draggable key={task.id} draggableId={task.id} index={index}>
                   {(provided) => (

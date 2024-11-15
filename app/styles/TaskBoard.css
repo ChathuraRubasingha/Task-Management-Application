@@ -1,0 +1,38 @@
+.task-board {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: rgb(240, 240, 240);
+}
+.column {
+  border: 1px dashed #c8c8c8;
+  border-radius: 12px;
+  padding: 20px 20px;
+}
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.header-left {
+  align-items: center;
+}
+.column-header h2 {
+  font-weight: 700;
+  padding-left: 10px;
+}
+.column-header p {
+  margin-left: 20px;
+  font-size: 14px;
+  color: blue;
+  font-weight: 700;
+  padding: 0px 5px;
+  background-color: rgb(231, 245, 255);
+  border-radius: 30px;
+}
+.header-left {
+  display: flex;
+}
