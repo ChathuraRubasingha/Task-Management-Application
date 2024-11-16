@@ -73,3 +73,6 @@ outline: none;
 .r-input option{
   margin: 10px;
 }
+.delete-p{
+  padding: 10px;
+}

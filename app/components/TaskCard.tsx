@@ -105,10 +105,17 @@ function TaskCard({ task }) {
 
   return (
     <div className=" card-wrapper border shadow-sm w-full max-w-md mb-3 ">
-      <div onClick={() => setIsDrawerOpen(true)} style={{height:'30px', width:'100%', position:'absolute'}}></div>
+      <div
+        onClick={() => setIsDrawerOpen(true)}
+        style={{ height: "30px", width: "100%", position: "absolute" }}
+      ></div>
       <div className="card-upper">
         <div className="card-title mb-2">
-        <TickCircle size={24} variant={task.status === 'completed' ?'Bold':'Outline'} color={task.status === 'completed' ? '#2A7E2E' : '#727272'} />
+          <TickCircle
+            size={24}
+            variant={task.status === "completed" ? "Bold" : "Outline"}
+            color={task.status === "completed" ? "#2A7E2E" : "#727272"}
+          />
           <input
             type="text"
             value={task.title}
@@ -125,8 +132,8 @@ function TaskCard({ task }) {
       <div className="card-lower">
         {task.description && (
           <div className="card-description">
-            {task.description && task.description.length > 100
-              ? `${task.description.substring(0, 100)}...`
+            {task.description && task.description.length > 75
+              ? `${task.description.substring(0, 75)}...`
               : task.description}
           </div>
         )}
@@ -163,7 +170,9 @@ function TaskCard({ task }) {
               {task.dueDate ? (
                 <span
                   style={
-                    islate
+                    task.status === "completed"
+                      ? { color: "#727272", backgroundColor: "transparent" }
+                      : islate
                       ? { color: "blue", backgroundColor: "#e9f1ff" }
                       : { color: "red", backgroundColor: "#ffeaeaec" }
                   }
@@ -236,7 +245,7 @@ function TaskCard({ task }) {
       </div>
       {remainingTimeText && (
         <div className="card-fotter">
-          <Clock style={{marginRight:'10px'}} size={20} color="#727272" />
+          <Clock style={{ marginRight: "10px" }} size={20} color="#727272" />
           <div>{remainingTimeText}</div>
         </div>
       )}

@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Menu,
   MenuItem,
+  DialogContent,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { removeTask, updateTask } from "../features/tasks/taskSlice";
@@ -35,7 +36,7 @@ export default function TaskDrawer({ task, open, onClose }) {
   const [assignee, setAssignee] = useState(task.assignee || null);
   const [priority, setPriority] = useState(task.priority || "");
   const [description, setDescription] = useState(task.description || "");
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
@@ -190,47 +191,63 @@ export default function TaskDrawer({ task, open, onClose }) {
                   value={formattedDueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                <IconButton onClick={() => setDueDate("")} style={{marginLeft:'5px'}}>
-                <CloseCircle size={20} color="#727272" />
+                <IconButton
+                  onClick={() => setDueDate("")}
+                  style={{ marginLeft: "5px" }}
+                >
+                  <CloseCircle size={20} color="#727272" />
                 </IconButton>
               </div>
 
               <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="assignee-dropdown">
-                <div
-                  className="r-input assignee-dropdown-input"
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
-                  {assignee ? (
-                    <div className="flex items-center">
-                      <Image src={assignee.image} width={20} height={20} alt="assignee avatar" />
-                      <span className="ml-2">{assignee.name}</span>
-                    </div>
-                  ) : (
-                    "Select Assignee"
-                  )}
-                </div>
-
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={() => setAnchorEl(null)}
-                >
-                  {assignees.map((assignee) => (
-                    <MenuItem
-                      key={assignee.name}
-                      onClick={() => handleAssigneeSelect(assignee)}
-                    >
+                <div className="assignee-dropdown">
+                  <div
+                    className="r-input assignee-dropdown-input"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                  >
+                    {assignee ? (
                       <div className="flex items-center">
-                        <Image src={assignee.image} width={30} height={30} alt="assignee avatar" />
+                        <Image
+                          src={assignee.image}
+                          width={20}
+                          height={20}
+                          alt="assignee avatar"
+                        />
                         <span className="ml-2">{assignee.name}</span>
                       </div>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </div>
-                <IconButton onClick={() => setAssignee(null)} style={{marginLeft:'5px'}}>
-                <CloseCircle size={20} color="#727272" />
+                    ) : (
+                      "Select Assignee"
+                    )}
+                  </div>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                  >
+                    {assignees.map((assignee) => (
+                      <MenuItem
+                        key={assignee.name}
+                        onClick={() => handleAssigneeSelect(assignee)}
+                      >
+                        <div className="flex items-center">
+                          <Image
+                            src={assignee.image}
+                            width={30}
+                            height={30}
+                            alt="assignee avatar"
+                          />
+                          <span className="ml-2">{assignee.name}</span>
+                        </div>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </div>
+                <IconButton
+                  onClick={() => setAssignee(null)}
+                  style={{ marginLeft: "5px" }}
+                >
+                  <CloseCircle size={20} color="#727272" />
                 </IconButton>
               </div>
 
@@ -240,12 +257,17 @@ export default function TaskDrawer({ task, open, onClose }) {
                   value={priority || ""}
                   onChange={(e) => setPriority(e.target.value)}
                 >
-                  <option value="" disabled>Set priority</option>
+                  <option value="" disabled>
+                    Set priority
+                  </option>
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
                   <option value="High">High</option>
                 </select>
-                <IconButton onClick={() => setPriority("")} style={{marginLeft:'5px'}}>
+                <IconButton
+                  onClick={() => setPriority("")}
+                  style={{ marginLeft: "5px" }}
+                >
                   <CloseCircle size={20} color="#727272" />
                 </IconButton>
               </div>
@@ -262,14 +284,41 @@ export default function TaskDrawer({ task, open, onClose }) {
         </div>
 
         <Dialog
+          className="delete-p"
           open={deleteDialogOpen}
           onClose={() => setDeleteDialogOpen(false)}
         >
-          <DialogTitle>Are you sure you want to delete this task?</DialogTitle>
+          <DialogTitle>
+            Are you sure you want to delete selected task?
+          </DialogTitle>
+          <DialogContent>
+            This will permanently delete the selected task. These items will no
+            longer be accessible to you. This action is irreversible.
+          </DialogContent>
+
           <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleDelete} color="error">
-              Delete
+            <Button
+              onClick={() => setDeleteDialogOpen(false)}
+              style={{
+                padding: "10px",
+                backgroundColor: "#f5f5f5",
+                color: "black",
+                borderRadius: "5px",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDelete}
+              color="error"
+              style={{
+                padding: "10px",
+                backgroundColor: "#CB2E27",
+                color: "white",
+                borderRadius: "5px",
+              }}
+            >
+              Yes, delete
             </Button>
           </DialogActions>
         </Dialog>
