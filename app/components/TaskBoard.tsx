@@ -1,5 +1,4 @@
 "use client";
-
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
 import { createEmptyTask, updateTask } from "../features/tasks/taskSlice";
@@ -10,6 +9,8 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import TaskCard from "./TaskCard";
+import { Add, RecordCircle } from "iconsax-react";
+import "../styles/TaskBoard.css";
 
 export default function TaskBoard() {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ export default function TaskBoard() {
   };
 
   const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+    const { destination, draggableId } = result;
     if (!destination) return;
 
     const newStatus = destination.droppableId as
@@ -39,100 +40,64 @@ export default function TaskBoard() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="task-board grid grid-cols-3 gap-4 bg-slate-50">
-        <Droppable droppableId="todo">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              style={{ textAlign: "center" }}
-            >
-              <h2>Todo ({todoTasks.length})</h2>
-              {todoTasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <TaskCard task={task} />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-              <button
-                onClick={() => handleAddEmptyTask("todo")}
-                className="add-task-btn"
+      <div className="task-board grid grid-cols-3 gap-4">
+        {[
+          { id: "todo", tasks: todoTasks, color: "#FFAD0D", label: "Todo" },
+          {
+            id: "inProgress",
+            tasks: inProgressTasks,
+            color: "#0C6FBF",
+            label: "In Progress",
+          },
+          { id: "completed", tasks: completedTasks, color: "#2A7E2E", label: "Completed" },
+        ].map(({ id, tasks, color, label }) => (
+          <Droppable key={id} droppableId={id}>
+            {(provided) => (
+              <div
+                className="column"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                style={{ textAlign: "center" }}
               >
-                + Add Task
-              </button>
-            </div>
-          )}
-        </Droppable>
-        <Droppable droppableId="inProgress">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              style={{ textAlign: "center" }}
-            >
-              <h2>In Progress ({inProgressTasks.length})</h2>
-              {inProgressTasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <TaskCard task={task} />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-              <button
-                onClick={() => handleAddEmptyTask("inProgress")}
-                className="add-task-btn"
-              >
-                + Add Task
-              </button>
-            </div>
-          )}
-        </Droppable>
-        <Droppable droppableId="completed">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              style={{ textAlign: "center" }}
-            >
-              <h2>Completed ({completedTasks.length})</h2>
-              {completedTasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <TaskCard task={task} />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-              <button
-                onClick={() => handleAddEmptyTask("completed")}
-                className="add-task-btn"
-              >
-                + Add Task
-              </button>
-            </div>
-          )}
-        </Droppable>
+                <div className="column-header">
+                  <div className="header-left">
+                    <RecordCircle size={24} color={color} />
+                    <h2>{label}</h2>
+                    <p>{tasks.length}</p>
+                  </div>
+                  <div className="header-right">
+                    <Add
+                      size={24}
+                      color="#000000"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleAddEmptyTask(id as "todo" | "inProgress" | "completed")}
+                    />
+                  </div>
+                </div>
+                {tasks.map((task, index) => (
+                  <Draggable key={task.id} draggableId={task.id} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <TaskCard task={task} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+                <div
+                  onClick={() => handleAddEmptyTask(id as "todo" | "inProgress" | "completed")}
+                  className="add-task-btn"
+                >
+                  <Add size={24} color="#727272" /> Add Task
+                </div>
+              </div>
+            )}
+          </Droppable>
+        ))}
       </div>
     </DragDropContext>
   );
