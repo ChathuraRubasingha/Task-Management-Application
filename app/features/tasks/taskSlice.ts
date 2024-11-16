@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { StaticImageData } from 'next/image';
 
-interface Assignee {
+export interface Assignee {
   name: string;
-  image: string;
+  image: StaticImageData | string;
 }
 
-interface Task {
+export interface Task {
   id: string;
   title: string;
   assignee?: Assignee;
@@ -35,22 +36,26 @@ const tasksSlice = createSlice({
         id: Date.now().toString(),
         title: '',
         status: action.payload.status,
+        description: '', // Ensure all required fields are provided
       };
       state.tasks.push(emptyTask);
     },
-    updateTask: (state, action: PayloadAction<{ id: string; field: keyof Task; value: any }>) => {
+    updateTask: (
+      state,
+      action: PayloadAction<{ id: string; field: keyof Task; value: string | Assignee | 'Low' | 'Medium' | 'High' | 'todo' | 'inProgress' | 'completed' }>
+    ) => {
       const task = state.tasks.find((task) => task.id === action.payload.id);
       if (task) {
         if (action.payload.field === "assignee" && typeof action.payload.value === "object") {
           task.assignee = action.payload.value as Assignee;
         } else {
-          task[action.payload.field] = action.payload.value;
+          task[action.payload.field] = action.payload.value as never;
         }
       }
     },
     removeTask: (state, action: PayloadAction<{ id: string }>) => {
-      state.tasks = state.tasks.filter(task => task.id !== action.payload.id);
-  },
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
+    },
   },
 });
 

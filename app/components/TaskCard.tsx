@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { updateTask } from "../features/tasks/taskSlice";
+import { Assignee, Task, updateTask } from "../features/tasks/taskSlice";
 import { format, differenceInDays, isToday } from "date-fns";
 import "../styles/TaskCard.css";
 import Use from "../assets/Images/profile img.png";
@@ -17,7 +17,7 @@ export const assignees = [
   { name: "Sam Wilson", image: Use },
 ];
 
-function TaskCard({ task }) {
+function TaskCard({ task }: { task: Task }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task.title || "");
   const [dueDate, setDueDate] = useState(
@@ -34,22 +34,28 @@ function TaskCard({ task }) {
   const [remainingTimeText, setRemainingTimeText] = useState("");
   const [islate, setIsLate] = useState(false);
 
-  const handleFieldChange = (field, value) => {
-    dispatch(updateTask({ id: task.id, field, value }));
-  };
+  type TaskField = "title" | "assignee" | "dueDate" | "priority";
 
-  const handleAssigneeChange = (assignee) => {
+  const handleFieldChange = (field: TaskField, value: string | Assignee | Date) => {
+    const formattedValue = field === "dueDate" && value instanceof Date 
+      ? value.toISOString()
+      : value;
+  
+    dispatch(updateTask({ id: task.id, field, value: formattedValue as string | Assignee }));
+  };
+  
+  const handleAssigneeChange = (assignee: Assignee) => {
     setSelectedAssignee(assignee);
     handleFieldChange("assignee", assignee);
     setShowDropdown(false);
   };
 
-  const handleDateChange = (event) => {
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = new Date(event.target.value);
     setDueDate(selectedDate);
     handleFieldChange("dueDate", selectedDate.toISOString());
     setShowDatePicker(false);
-
+  
     updateRemainingTimeText(selectedDate);
   };
 
@@ -66,13 +72,13 @@ function TaskCard({ task }) {
     }
   };
 
-  const handlePrioritySelect = (value) => {
+  const handlePrioritySelect = (value: string) => {
     setPriority(value);
     handleFieldChange("priority", value);
     setShowPriorityDropdown(false);
   };
 
-  const updateRemainingTimeText = (selectedDate) => {
+  const updateRemainingTimeText = (selectedDate:Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     selectedDate.setHours(0, 0, 0, 0);
@@ -144,13 +150,14 @@ function TaskCard({ task }) {
           <div className="card-button-left">
             <div className="asignee">
               {selectedAssignee ? (
-                <Image src={selectedAssignee.image} width={40} height={40} />
+                <Image src={selectedAssignee.image} width={40} height={40} alt='assignee'/>
               ) : (
                 <Image
                   src={Avetar}
                   width={40}
                   height={40}
                   onClick={() => setShowDropdown(true)}
+                  alt="assignee"
                 />
               )}
               {showDropdown && (
@@ -161,7 +168,7 @@ function TaskCard({ task }) {
                       onClick={() => handleAssigneeChange(assignee)}
                       className="assignee-menu hover:bg-gray-100"
                     >
-                      <Image src={assignee.image} width={40} height={40} />
+                      <Image src={assignee.image} width={40} height={40} alt="asignee"/>
                       <span>{assignee.name}</span>
                     </div>
                   ))}
@@ -213,7 +220,7 @@ function TaskCard({ task }) {
                 onClick={
                   !priority
                     ? () => setShowPriorityDropdown(!showPriorityDropdown)
-                    : null
+                    : undefined 
                 }
                 className={`cursor-pointer p-2 rounded-lg ${getPriorityStyle()}`}
               >
