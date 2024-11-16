@@ -10,7 +10,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { removeTask, updateTask } from "../features/tasks/taskSlice";
+import { Assignee, removeTask, Task, updateTask } from "../features/tasks/taskSlice";
 import { useState, useEffect } from "react";
 import { assignees } from "./TaskCard";
 import "../styles/DrowerModal.css";
@@ -27,7 +27,13 @@ import {
 } from "iconsax-react";
 import Image from "next/image";
 
-export default function TaskDrawer({ task, open, onClose }) {
+interface TaskDrawerProps {
+  task: Task;
+  open: boolean;
+  onClose: () => void;
+}
+
+export default function TaskDrawer({ task, open, onClose }: TaskDrawerProps) {
   const dispatch = useDispatch();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [title, setTitle] = useState(task.title || "");
@@ -37,7 +43,7 @@ export default function TaskDrawer({ task, open, onClose }) {
   const [priority, setPriority] = useState(task.priority || "");
   const [description, setDescription] = useState(task.description || "");
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLDivElement>(null);
 
   useEffect(() => {
     setTitle(task.title || "");
@@ -49,10 +55,11 @@ export default function TaskDrawer({ task, open, onClose }) {
   }, [task]);
 
   const handleSaveChanges = () => {
+    const validAssignee = assignee || { name: "", image: "" };
     dispatch(updateTask({ id: task.id, field: "title", value: title }));
     dispatch(updateTask({ id: task.id, field: "status", value: status }));
     dispatch(updateTask({ id: task.id, field: "dueDate", value: dueDate }));
-    dispatch(updateTask({ id: task.id, field: "assignee", value: assignee }));
+    dispatch(updateTask({ id: task.id, field: "assignee", value: validAssignee }));
     dispatch(updateTask({ id: task.id, field: "priority", value: priority }));
     dispatch(
       updateTask({ id: task.id, field: "description", value: description })
@@ -75,7 +82,7 @@ export default function TaskDrawer({ task, open, onClose }) {
     }
   };
 
-  const handleAssigneeSelect = (selectedAssignee) => {
+  const handleAssigneeSelect = (selectedAssignee: Assignee | null) => {
     setAssignee(selectedAssignee);
     setAnchorEl(null);
   };
@@ -177,7 +184,7 @@ export default function TaskDrawer({ task, open, onClose }) {
               <select
                 className="r-input"
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) => setStatus(e.target.value as "todo" | "inProgress" | "completed")}
               >
                 <option value="todo">To Do</option>
                 <option value="inProgress">In Progress</option>
@@ -203,7 +210,7 @@ export default function TaskDrawer({ task, open, onClose }) {
                 <div className="assignee-dropdown">
                   <div
                     className="r-input assignee-dropdown-input"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    onClick={(e: React.MouseEvent<HTMLDivElement>) => setAnchorEl(e.currentTarget)}
                   >
                     {assignee ? (
                       <div className="flex items-center">

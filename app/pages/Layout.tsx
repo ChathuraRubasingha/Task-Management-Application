@@ -7,10 +7,8 @@ import {
   Home,
   LampCharge,
   NotificationBing,
-  RepeateOne,
   SearchNormal1,
   Setting2,
-  Task,
   TaskSquare,
 } from "iconsax-react";
 import Profile from "../assets/Images/profile-holder.svg";
