@@ -9,7 +9,7 @@ import Avetar from "../assets/icons/user.svg";
 import CalendarIcon from "../assets/icons/date.svg";
 import Image from "next/image";
 import TaskDrawer from "./TaskDrawer";
-import { Clock, TickCircle } from "iconsax-react";
+import { Clock, ExportSquare, TickCircle } from "iconsax-react";
 
 export const assignees = [
   { name: "John Doe", image: Use },
@@ -105,10 +105,12 @@ function TaskCard({ task }) {
 
   return (
     <div className=" card-wrapper border shadow-sm w-full max-w-md mb-3 ">
-      <div
+      <div className="card-view"
         onClick={() => setIsDrawerOpen(true)}
         style={{ height: "30px", width: "100%", position: "absolute" }}
-      ></div>
+      >
+        <ExportSquare size={15} color="#727272" style={{margin:'10px',cursor:'pointer'}}/>
+      </div>
       <div className="card-upper">
         <div className="card-title mb-2">
           <TickCircle

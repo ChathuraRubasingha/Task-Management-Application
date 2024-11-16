@@ -84,3 +84,9 @@
   color: #727272;
 
 }
+.card-view{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  
+}
